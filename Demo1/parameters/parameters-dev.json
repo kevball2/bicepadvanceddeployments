@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "component": {
+            "value": "shared"
+        },
+        "product": {
+            "value": "bicep"
+        },
+        "location": {
+            "value": "northcentralus"
+        },
+        "env": {
+            "value": "dev2"
+        },
+        "IpPrefixes": {
+            "value":[
+              "172.16.0.0/20"
+            ] 
+        },
+        "Name":{
+            "value": "frontend"
+        },
+        "subnetPrefix":{
+            "value": "172.16.2.0/24"
+        },
+        "Delegation":{
+            "value": "Microsoft.Web/serverFarms"
+        },
+        "ServiceEndpoint":{
+            "value": "Microsoft.KeyVault"
+        }
+     }
+}        
+
