@@ -1,0 +1,30 @@
+{
+  "analyzers": {
+    "core": {
+      "rules": {
+        "explicit-values-for-loc-params":{
+          "level": "warning"
+        },
+        "no-hardcoded-env-urls":{
+          "level": "warning"
+        },
+        "no-loc-expr-outside-params":{
+          "level": "warning"
+        },
+        "outputs-should-not-contain-secrets":{
+          "level": "error"
+        },
+        "no-unused-params":{
+          "level": "warning"
+        },
+        "simplify-interpolation":{
+          "level": "warning"
+        },
+        "no-unused-vars":{
+          "level": "warning"
+        }
+
+      }
+    }
+  }
+}

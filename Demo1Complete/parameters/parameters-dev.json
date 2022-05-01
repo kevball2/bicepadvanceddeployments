@@ -1,0 +1,83 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "component": {
+            "value": "shared"
+        },
+        "product": {
+            "value": "demo2"
+        },
+        "env": {
+            "value": "dev"
+        },
+        "addressPrefixes": {
+            "value":[
+              "172.16.0.0/20"
+            ] 
+        },
+        "dnsServers": {
+            "value":[
+              "1.1.1.1",
+              "4.4.4.4"
+            ] 
+        },
+        "locationList": {
+            "value":{
+                "northcentralus": "ncenus",
+                "southcentralus": "scenus"
+            }
+        }, 
+        "subnets":{
+            "value":[
+                    {
+                    "name": "frontend",
+                    "subnetPrefix": "172.16.2.0/24",
+                    "delegation" : "Microsoft.Web/serverfarms",
+                    "privateEndpointNetworkPolicies": "disabled",
+                    "serviceEndpoints":[
+                        {
+                            "service": "Microsoft.KeyVault",
+                            "locations":[
+                                "*"
+                            ]
+                        },
+                        {
+                            "service": "Microsoft.Web",
+                            "locations":[
+                                "*"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "backend",
+                    "subnetPrefix": "172.16.3.0/24",
+                    "delegation" : "Microsoft.Web/serverfarms",
+                    "privateEndpointNetworkPolicies": "enabled",
+                    "serviceEndpoints":[
+                        {
+                            "service": "Microsoft.KeyVault",
+                            "locations":[
+                                "*"
+                            ]
+                        },
+                        {
+                            "service": "Microsoft.Web",
+                            "locations":[
+                                "*"
+                            ]
+                        },
+                        {
+                            "service": "Microsoft.AzureCosmosDB",
+                            "locations":[
+                                "*"
+                            ]
+                        }
+                    ]
+                }
+            ]                      
+        } 
+    }
+}        
+
