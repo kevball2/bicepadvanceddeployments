@@ -1,0 +1,79 @@
+trigger:
+  branches:
+    include:
+    - dev
+    - main
+    - feat/*
+    - fix/*
+  paths:
+    include:
+    - shared
+
+parameters:
+  - name: region
+    displayName: 'Deployment Region'
+    type: string
+    default: 'northcentralus'
+
+
+  
+  # : 
+  # : 
+  # : 
+  # : 'Vaccine-DevTest - Principal'
+  # : 'SharecareBot'
+  # : 
+  # : 
+
+variables:
+  - name: isMain
+    value: ${{ eq(variables['Build.SourceBranch'], 'refs/heads/main') }}
+  - name: isFix
+    value: ${{ startsWith(variables['Build.SourceBranch'], 'refs/heads/fix') }}
+  - name: isFeature
+    value: ${{ startsWith(variables['Build.SourceBranch'], 'refs/heads/feat') }}
+  - name: isDev
+    value: ${{ eq(variables['Build.SourceBranch'], 'refs/heads/develop') }}
+  - name: azureServiceConnection
+    value: 'bicep-demo-azdo'
+  - name: githubServiceConnection
+    value: 'bicep-demo-gh'
+  - name: vmImageName
+    value: 'ubuntu-latest'
+  - name: workingDirectory
+    value: '$(System.DefaultWorkingDirectory)'
+  - name: templateName
+    value: 'demoshareservices'
+  - name: environmentName
+    ${{ if eq(variables['isMain'], 'True') }}:
+      value: 'prod'
+    ${{ if eq(variables['isMain'], 'False') }}:
+      value: 'dev'
+    
+
+
+pool:
+  vmImage: $(vmImageName)
+
+
+stages: 
+- stage: Template_Validation
+  displayName: 'Template Validation'
+  jobs:
+    - job: Template_Validation
+      displayName: 'Template Validation Job'
+      steps:
+        - task: AzureCLI@2
+          displayName: Validate $(environmentName) template for $(region)
+          inputs:
+            azureSubscription: '$(azureServiceConnection)'
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              az --version
+              az deployment sub validate \
+              --location $(region) \
+              --name '$(templateName-$(environmentName)-$(parameters.region)' \
+              --template-file '$(templateName).bicep' \
+              --parameters './parameters/$templateName-parameters-$(environmentName).json' \
+              --parameters location=$(region)

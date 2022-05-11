@@ -1,0 +1,88 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "component": {
+      "value": "data"
+  },
+  "product": {
+      "value": "bicep"
+  },
+  "env": {
+      "value": "dev"
+  },
+  "locationList": {
+      "value":{
+          "northcentralus": "ncenus",
+          "southcentralus": "scenus"
+      }
+  },
+  "isProd" :{
+    "value": false
+  },
+    "cosmoLocations":{
+      "value":[
+        {
+          "locationName": "North Central US",
+          "failoverPriority": 0,
+          "isZoneRedundant": false
+        }
+      ] 
+    },
+    "cosmosDbProperties": {
+      "value": [
+        {
+          "cosmosAccountName": "todo",
+          "sqlDatabaseName": "todo"
+        }
+      ]
+    },
+    "containerProperties": {
+      "value": [
+        {
+          "name": "todo",
+          "path": "/id",
+          "cosmosAccountName": "todo",
+          "throughput": null
+
+        }
+      ]
+    },
+    "allowedIpAddress":{
+      "value": [
+        "193.252.198.138",
+        "78.198.35.23"
+      ]
+    },
+    "allowedVirtualNetworks":{
+      "value": [
+        {
+          "subnet": "snet-middletier-dev-ncenus",
+          "vnet": "vnet-bicep-shared-dev-ncenus",
+          "resourceGroupName": "rg-bicep-shared-dev-ncenus"
+        }
+        
+      ]
+    },
+    "actionGroupProperties":{
+      "value": {
+          "emailReceivers":[
+                {
+                  "emailAddress": "kevin@technicalpanda.com",
+                  "name": "koliver_email",
+                  "useCommonAlertSchema": false
+      
+                }
+                
+              ],
+            "armRoleReceivers":[
+                {
+                  "name": "MonitoringReader",
+                  "roleId": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+                  "useCommonAlertSchema": false
+                }        
+              ]
+          }
+  }
+  }  
+}

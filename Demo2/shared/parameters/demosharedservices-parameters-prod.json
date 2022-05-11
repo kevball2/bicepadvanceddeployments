@@ -1,0 +1,222 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "component": {
+            "value": "shared"
+        },
+        "product": {
+            "value": "bicep"
+        },
+        "env": {
+            "value": "prod"
+        },
+        "locationList": {
+            "value":{
+                "northcentralus": "ncenus",
+                "southcentralus": "scenus"
+            }
+        },
+        "workspaceProperties":{
+            "value": {
+                "retentionInDays": 30,
+                "skuName": "PerGB2018"
+            }
+        },
+        "keyVaultProperties": {
+            "value": {
+                "sku": "Standard",
+                "enabledForDeployment": false,
+                "enabledForTemplateDeployment": true,
+                "enabledForDiskEncryption": false,
+                "enableRbacAuthorization": true,
+                "enableSoftDelete": true,
+                "softDeleteRetentionInDays": 90,
+                "enablePurgeProtection": true,
+                "enableNetworkAcls": true,
+                "allowedSubnets":[
+                    "snet-bicep-frontend",
+                    "snet-bicep-middletier"
+                ],
+                "logs":[
+                    {
+                    "name": "AuditEvent",
+                    "enabled": true
+                    },
+                    {
+                    "name": "AzurePolicyEvaluationDetails",
+                    "enabled":  true
+                    }
+                ],
+                "metricsRetentionDays": 30
+            }
+
+        },
+        "dnsServers": {
+            "value":[
+              
+            ] 
+        },
+        "addressPrefixes": {
+            "value":[
+              "172.16.0.0/20"
+            ] 
+        }, 
+        "subnets":{
+         "value": [
+              {
+                "name": "frontend",
+                "subnetPrefix": "172.16.2.0/24",
+                "delegations" : "Microsoft.Web/serverfarms",
+                    "privateEndpointNetworkPolicies": "disabled",
+                    "serviceEndpoints":[
+                        {
+                            "service": "Microsoft.KeyVault",
+                            "locations":[
+                                "*"
+                            ]
+                        },
+                        {
+                            "service": "Microsoft.Web",
+                            "locations":[
+                                "*"
+                            ]
+                        }
+                    ]
+            
+              },
+              {
+                "name": "middletier",
+                "subnetPrefix": "172.16.3.0/24",
+                "delegations" : "Microsoft.Web/serverfarms",
+                "privateEndpointNetworkPolicies": "enabled",
+                "serviceEndpoints":[
+                    {
+                        "service": "Microsoft.KeyVault",
+                        "locations":[
+                            "*"
+                        ]
+                    },
+                    {
+                        "service": "Microsoft.Web",
+                        "locations":[
+                            "*"
+                        ]
+                    },
+                    {
+                        "service": "Microsoft.AzureCosmosDB",
+                        "locations":[
+                            "*"
+                        ]
+                    }
+                ]
+              }
+        ]
+        },
+        "roleAssignments":{
+            "value": [
+                {
+                "name": "bicep-demo-keyvault-secretreader",
+                "groupObjId": "0162e86b-943d-4a31-b97d-a47bb3e191af",
+                "roleDefinitionId": "4633458b-17de-408a-b874-0445c86b69e6",
+                "type": "Group"
+                }
+            ]
+            },
+        "actionGroupProperties":{
+            "value": {
+                "emailReceivers":[
+                      {
+                        "emailAddress": "kevin@technicalpanda.com",
+                        "name": "koliver_email",
+                        "useCommonAlertSchema": false
+            
+                      }
+                      
+                    ],
+                  "armRoleReceivers":[
+                      {
+                        "name": "MonitoringReader",
+                        "roleId": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+                        "useCommonAlertSchema": false
+                      }        
+                    ]
+                }
+        },
+        "frontDoorProperties":{
+            "value":{
+            "enabledState": true,
+            "wafMode": "Prevention",
+            "wafEnabledState": true,
+            "endpoints":[
+                {
+                    "name": "Default",
+                    "hostName": "fd-bicep-prod.azurefd.net",
+                    "enableSSL": false,
+                    "sessionAffinityEnabledState": "Disabled",
+                    "patternsToMatch":[ 
+                            "/*"
+                    ],
+                    "backendHosts":[
+                        {
+                            "poolName":"Default",
+                            "address": "app-bicep-frontend-prod-ncenus-01.azurewebsites.net",
+                            "hostHeader": "app-bicep-frontend-prod-necenus-01.azurewebsites.net",
+                            "weight": 100
+                        }
+                    ]
+                    
+                },
+                {
+                    "name": "bicep-prod",
+                    "hostName": "bicep-prod.technicalpanda.com",
+                    "enableSSL": true,
+                    "sessionAffinityEnabledState": "Disabled",
+                    "patternsToMatch":[ 
+                            "/*"
+                    ],
+                    "backendHosts":[
+                        {
+                            "poolName":"bicep-prod",
+                            "address": "app-bicep-frontend-prod-ncenus-01.azurewebsites.net",
+                            "hostHeader": "app-bicep-frontend-prod-ncenus-01.azurewebsites.net",
+                            "weight": 100
+                        }
+                    ]
+                    
+                }
+            ],
+            "probes":[
+                {
+                    "name": "Default",
+                    "probePath": "/",
+                    "probeMethod": "Head"
+                },
+                {
+                    "name": "bicep-dev",
+                    "probePath": "/",
+                    "probeMethod": "Head"
+                }
+            ],
+            "lbSettings":[
+                {
+                    "name":"Default",
+                    "sampleSize": 4,
+                    "successfulSamplesRequired": 2,
+                    "backendPool": "Default",
+                    "additionalLatencyMilliseconds": 0
+                },
+                {
+                    "name":"bicep-dev",
+                    "sampleSize": 4,
+                    "successfulSamplesRequired": 2,
+                    "backendPool": "bicep-dev",
+                    "additionalLatencyMilliseconds": 0
+                }
+            ]
+            }
+        }
+    }  
+}
+          
+

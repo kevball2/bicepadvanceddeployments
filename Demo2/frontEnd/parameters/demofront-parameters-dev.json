@@ -1,0 +1,108 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "env": {
+        "value": "dev"
+      },
+      "product":{
+        "value": "bicep"
+      },
+      "component": {
+        "value": "frontend"
+      },
+      "locationList": {
+          "value":{
+              "northcentralus": "ncenus",
+              "southcentralus": "scenus"
+          }
+      },
+      "actionGroupProperties":{
+        "value": {
+            "emailReceivers":[
+                  {
+                    "emailAddress": "kevin@technicalpanda.com",
+                    "name": "koliver_email",
+                    "useCommonAlertSchema": false
+        
+                  }
+                  
+                ],
+              "armRoleReceivers":[
+                  {
+                    "name": "MonitoringReader",
+                    "roleId": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+                    "useCommonAlertSchema": false
+                  }        
+                ]
+            }
+    },
+      "sites": {
+        "value": 
+          {
+          "appPlans": [{
+            "appPlanName": "frontend",
+            "instance": "01",
+            "location": "northcentralus",
+            "kind": "linux",
+            "skuName": "P1v2",
+            "skuTier": "PremiumV2",
+            "skuSize": "P1v2",
+            "skuFamily": "Pv2",
+            "skuCapacity": 1,
+            "perSiteScaling": false,
+            "maxWorkerCount": 1,
+            "reserved": true,
+            "appServices": [{
+              "appServiceName": "frontend",
+              "instance": "01",
+              "location": "northcentralus",
+              "kind": "app,linux",
+              "linuxFxVersion": "NODE|12-lts",
+              "ftpsState": "Disabled",
+              "deploySlot": false,
+              "healthCheckPath": "/health",
+              "deploymentSlots": [
+                {
+                  "name": "stage"
+                }
+              ],
+              "siteConfig": [
+                  {
+                    "name": "middleTier-SECRET",
+                    "value": "",
+                    "isKeyVault": true
+                  },
+                  {
+                    "name": "middleTier_URL",
+                    "value": "https://func-middletier-dev-ncenus-01.azurewebsites.net",
+                    "isKeyVault": false
+                  }
+            ],
+            "ipSecurityRestrictions":[
+              {
+                "ipAddress": "AzureFrontDoor.Backend",
+                "action": "Allow",
+                "tag": "ServiceTag",
+                "priority": 300,
+                "name": "ar-front-FrontDoor",
+                "description": "Allow access from FrontDoor"
+              },
+              {
+                "ipAddress": "AzureDevOps",
+                "action": "Allow",
+                "tag": "ServiceTag",
+                "priority": 500,
+                "name": "ar-front-azure-devops",
+                "description": "Allow access from Azure Devops "
+              }
+            ]
+            }
+            ]
+          }
+          ]
+        } 
+      } 
+    }  
+}
+          

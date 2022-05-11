@@ -1,0 +1,253 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "<specificed in pipeline>"
+    },
+    "env": {
+      "value": "prod"
+    },
+    "product":{
+      "value": "vaccine"
+    },
+    "component": {
+      "value": "front"
+    },
+    "sites": {
+      "value": 
+        {
+        "appPlans": [{
+          "appPlanName": "vaccine-front",
+          "instance": "01",
+          "location": "eastus",
+          "kind": "linux",
+          "skuName": "P1v2",
+          "skuTier": "PremiumV2",
+          "skuSize": "P1v2",
+          "skuFamily": "Pv2",
+          "skuCapacity": 1,
+          "perSiteScaling": false,
+          "maxWorkerCount": 1,
+          "reserved": true,
+          "appServices": [{
+            "appServiceName": "vaccine-front",
+            "instance": "01",
+            "location": "eastus",
+            "kind": "app,linux",
+            "linuxFxVersion": "NODE|12-lts",
+            "ftpsState": "Disabled",
+            "deploySlot": true,
+            "healthCheckPath": "/health",
+            "deploymentSlots": [
+              {
+                "name": "stage"
+              }
+            ],
+            "siteConfig": [
+                {              
+                  "name": "AAD",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {              
+                  "name": "AMBA",
+                  "value": "{\"urls\":{\"base\":\"https://vaccine-amba-dev.hs.sharecare.paris\",\"dashboard\":\"/dashboard\"}}",
+                  "isKeyVault": false
+                },
+                {
+                  "name": "APP-SECRET",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "CIO-BASIC-AUTH-KEY",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "CIO-SITE-ID",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "CUSTOMER-IO",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "CUSTOMERIO-KEY",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "MT-SECRET",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "MT_URL",
+                  "value": "https://func-vaccine-mt-prod-eastus-01.azurewebsites.net",
+                  "isKeyVault": false
+                },
+                {
+                  "name": "WEBCHAT-SECRET",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "RECAPTCHA-LEVEL",
+                  "value": "0.3",
+                  "isKeyVault": false
+                },
+                {
+                  "name": "encryptSalt",
+                  "value": "",
+                  "isKeyVault": true
+                }
+          ],
+          "ipSecurityRestrictions":[
+            {
+              "ipAddress": "AzureFrontDoor.Backend",
+              "action": "Allow",
+              "tag": "ServiceTag",
+              "priority": 300,
+              "name": "ar-vaccinefront-azure-FrontDoor",
+              "description": "Allow access from FrontDoor"
+            },
+            {
+              "ipAddress": "AzureDevOps",
+              "action": "Allow",
+              "tag": "ServiceTag",
+              "priority": 500,
+              "name": "ar-vaccinefront-azure-devops",
+              "description": "Allow access from Azure Devops "
+            }
+          ]
+          }
+          ]
+        },
+        {
+          "appPlanName": "vaccinefront",
+          "instance": "01",
+          "location": "westus",
+          "kind": "linux",
+          "skuName": "P1v2",
+          "skuTier": "PremiumV2",
+          "skuSize": "P1v2",
+          "skuFamily": "Pv2",
+          "skuCapacity": 1,
+          "perSiteScaling": false,
+          "maxWorkerCount": 1,
+          "reserved": true,
+          "appServices": [{
+            "appServiceName": "vaccinefront",
+            "instance": "01",
+            "location": "westus",
+            "kind": "app,linux",
+            "linuxFxVersion": "NODE|12-lts",
+            "ftpsState": "Disabled",
+            "deploySlot": true,
+            "healthCheckPath": "/health",
+            "deploymentSlots": [
+              {
+                "name": "stage"
+              }
+            ],
+            "siteConfig": [
+                {              
+                  "name": "AAD",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {              
+                  "name": "AMBA",
+                  "value": "{\"urls\":{\"base\":\"https://vaccine-amba-dev.hs.sharecare.paris\",\"dashboard\":\"/dashboard\"}}",
+                  "isKeyVault": false
+                },
+                {
+                  "name": "APP-SECRET",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "CIO-BASIC-AUTH-KEY",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "CIO-SITE-ID",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "CUSTOMER-IO",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "CUSTOMERIO-KEY",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "MT-SECRET",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "MT_URL",
+                  "value": "https://func-vaccinemt-prod-westus-01.azurewebsites.net",
+                  "isKeyVault": false
+                },
+                {
+                  "name": "WEBCHAT-SECRET",
+                  "value": "",
+                  "isKeyVault": true
+                },
+                {
+                  "name": "RECAPTCHA-LEVEL",
+                  "value": "0.3",
+                  "isKeyVault": false
+                },
+                {
+                  "name": "encryptSalt",
+                  "value": "",
+                  "isKeyVault": true
+                }
+          ],
+          "ipSecurityRestrictions":[
+            {
+              "ipAddress": "AzureCloud.eastus",
+              "action": "Allow",
+              "tag": "ServiceTag",
+              "priority": 300,
+              "name": "ar-vaccinefront-azure-eastus",
+              "description": "Allow access from eastus"
+            },
+            {
+              "ipAddress": "AzureCloud.westus",
+              "action": "Allow",
+              "tag": "ServiceTag",
+              "priority": 400,
+              "name": "ar-vaccinefront-azure-westus",
+              "description": "Allow access from westus"
+            },
+            {
+              "ipAddress": "AzureDevOps",
+              "action": "Allow",
+              "tag": "ServiceTag",
+              "priority": 500,
+              "name": "ar-vaccinefront-azure-devops",
+              "description": "Allow access from Azure Devops "
+            }
+          ]
+          }
+          ]
+        }
+        ]
+      } 
+    } 
+  }  
+}
+        

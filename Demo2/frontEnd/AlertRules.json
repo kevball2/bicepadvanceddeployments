@@ -1,0 +1,155 @@
+{
+    "staticAlerts":[
+        {
+            "alertName": "Http Server Errors (500)",
+            "alertDescription": "Alert fires when 500 count errors are great than 50 in 5 minutes",
+            "alertSeverity": 3,
+            "isEnabled": true,
+            "windowSize": "PT5M",
+            "evaluationFrequency": "PT5M",
+            "odataType": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+            "criteria":[
+                {
+                    "name": "1st criterion",
+                    "metricName": "Http5xx",
+                    "criterionType": "StaticThresholdCriterion",
+                    "dimensions":[],
+                    "operator": "GreaterThan",
+                    "threshold": "50",
+                    "timeAggregation": "Total"
+
+                }
+            ] 
+        }
+    ],
+    "dynamicAlerts":[
+        {
+            "alertName": "Http Server Errors (403)",
+            "alertDescription": "Alert fires when 500 count errors are great than 50 in 5 minutes",
+            "alertSeverity": 3,
+            "isEnabled": true,
+            "windowSize": "PT5M",
+            "evaluationFrequency": "PT5M",
+            "odataType": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+            "criteria":[
+                {
+                    "name": "1st criterion",
+                    "metricName": "Http403",
+                    "criterionType": "DynamicThresholdCriterion",
+                    "dimensions":[],
+                    "operator": "GreaterOrLessThan",
+                    "alertSensitivity": "Medium",
+                    "numberOfEvaluationPeriods": "4",
+                    "minFailingPeriodsToAlert": "4",
+                    "timeAggregation": "Total"
+                }
+            ] 
+        }
+    ],
+    "logAlerts":[
+        {
+            "alertName": "Trace Query Alert",
+            "alertDescription": "Checks traces log for severityLevel entries equal to 3",
+            "alertSeverity": 3,
+            "isEnabled": true,
+            "autoMitigate": true,
+            "checkWorkspaceAlertsStorageConfigured": false,
+            "windowSize": "PT5M",
+            "evaluationFrequency": "PT5M",
+            "muteActionsDuration": "",
+            "odataType": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+            "criteria":[
+                {
+                    "query": "traces | where severityLevel == 3",
+                    "metricMeasureColumn": "severityLevel",
+                    "resourceIdColumn":" ",
+                    "dimensions":[],
+                    "operator": "GreaterThan",
+                    "threshold": "0",
+                    "timeAggregation": "Total",
+                    "numberOfEvaluationPeriods": "4",
+                    "minFailingPeriodsToAlert": "4"
+                    
+                }
+            ] 
+        },
+        {
+            "alertName": "ServerResponseTime_qry",
+            "alertDescription": "exclude dashboard by query agregate agv responsetime by 5m >  500ms",
+            "alertSeverity": 2,
+            "isEnabled": true,
+            "autoMitigate": true,
+            "checkWorkspaceAlertsStorageConfigured": false,
+            "windowSize": "PT1H",
+            "evaluationFrequency": "PT15M",
+            "muteActionsDuration": "",
+            "odataType": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+            "criteria":[
+                {
+                    "query": "requests\n| where timestamp >= ago(6h)\n| where notempty(duration)\n| where name !contains \"Dashboard\"\n| extend request_duration = iif(itemType == 'request', duration, todouble(''))\n| summarize AggregatedValue = avg(request_duration) by bin(timestamp, 5m)\n| order by timestamp desc",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "resourceIdColumn":" ",
+                    "dimensions":[],
+                    "operator": "GreaterThan",
+                    "threshold": "500",
+                    "timeAggregation": "Average",
+                    "numberOfEvaluationPeriods": "2",
+                    "minFailingPeriodsToAlert": "2"
+                    
+                }
+            ] 
+        },
+        {
+            "alertName": "avgmessages-byscenario_qry",
+            "alertDescription": "avg messages by scenario less than 10 by 15mn",
+            "alertSeverity": 2,
+            "isEnabled": true,
+            "autoMitigate": true,
+            "checkWorkspaceAlertsStorageConfigured": false,
+            "windowSize": "PT1H",
+            "evaluationFrequency": "PT15M",
+            "muteActionsDuration": "",
+            "odataType": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+            "criteria":[
+                {
+                    "query": "let scenario = customEvents\n| where timestamp >= ago(12h)\n| where name == \"ScenarioStart\" and customDimensions[\"dialogName\"] == \"/scenarios/FC_Connect_Manager\"\n| extend conv_id = customDimensions[\"conv_id\"]\n| summarize timestamp = min(timestamp) by tostring(conv_id);\nlet messages = customEvents\n| where timestamp >= ago(12h)\n| where name == \"Message\"\n| extend callstack = customDimensions[\"callstack\"], conv_id = customDimensions[\"conv_id\"]\n| summarize cnt = count() by tostring(conv_id) ;\nscenario\n| join (messages) on conv_id \n| summarize AggregatedValue = avg(cnt) by bin(timestamp, 15m)\n| order by timestamp desc",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "resourceIdColumn":" ",
+                    "dimensions":[],
+                    "operator": "LessThan",
+                    "threshold": "10",
+                    "timeAggregation": "Average",
+                    "numberOfEvaluationPeriods": "4",
+                    "minFailingPeriodsToAlert": "4"
+                    
+                }
+            ] 
+        },
+        {
+            "alertName": "FailedRequest_pct",
+            "alertDescription": " > 20%",
+            "alertSeverity": 2,
+            "isEnabled": true,
+            "autoMitigate": true,
+            "checkWorkspaceAlertsStorageConfigured": false,
+            "windowSize": "PT1H",
+            "evaluationFrequency": "PT15M",
+            "muteActionsDuration": "",
+            "odataType": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria",
+            "criteria":[
+                {
+                    "query": "requests\r\n| where timestamp >= ago(6h)\r\n| where itemType == 'request'\r\n| extend failed = iif(success == False, 1.00, todouble(''))\r\n| extend total = iif(itemType == 'request', 1.00, todouble(''))\r\n| summarize AggregatedValue = (sum(failed)*100) / sum(total) by bin(timestamp, 5m)\r\n| order by timestamp desc\n",
+                    "metricMeasureColumn": "AggregatedValue",
+                    "resourceIdColumn":" ",
+                    "dimensions":[],
+                    "operator": "GreaterThan",
+                    "threshold": "20",
+                    "timeAggregation": "Average",
+                    "numberOfEvaluationPeriods": "4",
+                    "minFailingPeriodsToAlert": "4"
+                    
+                }
+            ] 
+        }
+    ]
+}

@@ -1,0 +1,191 @@
+{
+    "sku": "Classic_AzureFrontDoor",
+    "policySettings": {
+        "enabledState": "Enabled",
+        "mode": "Prevention",
+        "customBlockResponseStatusCode": 403,
+        "requestBodyCheck": "Enabled"
+        },
+    "customRules": [
+        {
+            "name": "LimitAccesRate",
+            "enabledState": "Disabled",
+            "priority": 50,
+            "ruleType": "RateLimitRule",
+            "rateLimitDurationInMinutes": 1,
+            "rateLimitThreshold": 100,
+            "matchConditions": [
+                {
+                    "matchVariable": "RequestUri",
+                    "operator": "Contains",
+                    "negateCondition": false,
+                    "matchValue": [
+                        "/"
+                    ],
+                    "transforms": []
+                }
+            ],
+            "action": "Log"
+        }
+    ],
+    "managedRuleSets": [
+{
+    "ruleSetType": "DefaultRuleSet",
+    "ruleSetVersion": "1.0",
+    "ruleGroupOverrides": [
+        {
+            "ruleGroupName": "SQLI",
+            "rules": [
+                {
+                    "ruleId": "942440",
+                    "enabledState": "Enabled",
+                    "action": "Block",
+                    "exclusions": [
+                        {
+                            "matchVariable": "RequestBodyPostArgNames",
+                            "selectorMatchOperator": "Equals",
+                            "selector": "captcha"
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "942430",
+                    "enabledState": "Enabled",
+                    "action": "Block",
+                    "exclusions": [
+                        {
+                            "matchVariable": "RequestBodyPostArgNames",
+                            "selectorMatchOperator": "Equals",
+                            "selector": "captcha"
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "942390",
+                    "enabledState": "Enabled",
+                    "action": "Block",
+                    "exclusions": [
+                        {
+                            "matchVariable": "RequestBodyPostArgNames",
+                            "selectorMatchOperator": "Equals",
+                            "selector": "frontLineMedical"
+                        }
+                    ]
+                }
+            ],
+            "exclusions": [
+                {
+                    "matchVariable": "RequestBodyPostArgNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "captcha"
+                },
+                {
+                    "matchVariable": "QueryStringArgNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "ec"
+                },
+                {
+                    "matchVariable": "RequestHeaderNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "__cf_bm"
+                },
+                {
+                    "matchVariable": "RequestBodyPostArgNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "r"
+                },
+                {
+                    "matchVariable": "QueryStringArgNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "qd"
+                },
+                {
+                    "matchVariable": "RequestCookieNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "__cf_bm"
+                },
+                {
+                    "matchVariable": "RequestBodyPostArgNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "name"
+                },
+                {
+                    "matchVariable": "QueryStringArgNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "__cf_chl_jschl_tk__"
+                },
+                {
+                    "matchVariable": "QueryStringArgNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "p"
+                },
+                {
+                    "matchVariable": "QueryStringArgNames",
+                    "selectorMatchOperator": "Equals",
+                    "selector": "qd"
+                }
+            ]
+        },
+        {
+            "ruleGroupName": "RCE",
+            "rules": [
+                {
+                    "ruleId": "932150",
+                    "enabledState": "Enabled",
+                    "action": "Block",
+                    "exclusions": [
+                        {
+                            "matchVariable": "RequestBodyPostArgNames",
+                            "selectorMatchOperator": "Equals",
+                            "selector": "name"
+                        }
+                    ]
+                }
+            ],
+            "exclusions": []
+        },
+        {
+            "ruleGroupName": "XSS",
+            "rules": [
+                {
+                    "ruleId": "941130",
+                    "enabledState": "Enabled",
+                    "action": "Block",
+                    "exclusions": [
+                        {
+                            "matchVariable": "RequestCookieNames",
+                            "selectorMatchOperator": "Equals",
+                            "selector": "s_sq"
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "941120",
+                    "enabledState": "Enabled",
+                    "action": "Block",
+                    "exclusions": [
+                        {
+                            "matchVariable": "RequestCookieNames",
+                            "selectorMatchOperator": "Equals",
+                            "selector": "__cf_bm"
+                        },
+                        {
+                            "matchVariable": "QueryStringArgNames",
+                            "selectorMatchOperator": "Equals",
+                            "selector": "ec"
+                        },
+                        {
+                            "matchVariable": "QueryStringArgNames",
+                            "selectorMatchOperator": "Equals",
+                            "selector": "qd"
+                        }
+                    ]
+                }
+            ],
+            "exclusions": []
+        }
+    ],
+    "exclusions": []
+}
+]
+}

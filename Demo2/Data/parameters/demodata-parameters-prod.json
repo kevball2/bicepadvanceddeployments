@@ -1,0 +1,98 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "component": {
+      "value": "data"
+  },
+  "product": {
+      "value": "bicep"
+  },
+  "env": {
+      "value": "prod"
+  },
+  "locationList": {
+      "value":{
+          "northcentralus": "ncenus",
+          "southcentralus": "scenus"
+      }
+  },
+  "isProd" :{
+    "value": true
+  },
+    "cosmoLocations":{
+      "value":[
+        {
+          "locationName": "North Central US",
+          "failoverPriority": 0,
+          "isZoneRedundant": false
+        },
+        {
+          "locationName": "South Central US",
+          "failoverPriority": 1,
+          "isZoneRedundant": false
+        }
+      ] 
+    },
+    "cosmosDbProperties": {
+      "value": [
+        {
+          "cosmosAccountName": "todo",
+          "sqlDatabaseName": "todo"
+        }
+      ]
+    },
+    "containerProperties": {
+      "value": [
+        {
+          "name": "todo",
+          "path": "/id",
+          "cosmosAccountName": "todo",
+          "throughput": 400
+
+        }
+      ]
+    },
+    "allowedIpAddress":{
+      "value": [
+        "193.252.18.138",
+        "78.198.25.23"
+      ]
+    },
+    "allowedVirtualNetworks":{
+      "value": [
+        {
+          "subnet": "snet-middletier-prod-ncenus",
+          "vnet": "vnet-bicep-shared-prod-ncenus",
+          "resourceGroupName": "rg-bicep-shared-prod-ncenus"
+        },
+        {
+          "subnet": "snet-middletier-prod-scenus",
+          "vnet": "vnet-bicep-shared-prodscenus",
+          "resourceGroupName": "rg-bicep-shared-prod-scenus"
+        }
+        
+      ]
+    },
+    "actionGroupProperties":{
+      "value": {
+          "emailReceivers":[
+                {
+                  "emailAddress": "kevin@technicalpanda.com",
+                  "name": "koliver_email",
+                  "useCommonAlertSchema": false
+      
+                }
+                
+              ],
+            "armRoleReceivers":[
+                {
+                  "name": "MonitoringReader",
+                  "roleId": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+                  "useCommonAlertSchema": false
+                }        
+              ]
+          }
+  }
+  }  
+}

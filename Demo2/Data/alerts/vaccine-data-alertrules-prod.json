@@ -1,0 +1,32 @@
+{
+    "staticAlerts":[
+        {
+            "alertName": "Normalized_RU",
+            "alertDescription": "greater than 90 %\n aggregation 5mn",
+            "alertSeverity": 1,
+            "isEnabled": true,
+            "windowSize": "PT5M",
+            "evaluationFrequency": "PT5M",
+            "odataType": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+            "criteria":[
+                {
+                    "name": "1st criterion",
+                    "criterionType": "StaticThresholdCriterion",
+                    "metricNamespace": "microsoft.documentdb/databaseaccounts",
+                    "metricName": "NormalizedRUConsumption",
+                    "dimensions":[],
+                    "operator": "GreaterThan",
+                    "threshold": "90",
+                    "timeAggregation": "Average"
+
+                }
+            ] 
+        }
+    ],
+    "dynamicAlerts":[
+        
+    ],
+    "logAlerts":[
+        
+    ]
+}
